@@ -7,23 +7,18 @@ import aiofiles
 async def get_item(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            a = await response.text()
-            soup = BeautifulSoup(a, 'html.parser')
-            product_elements = soup.find_all('div', class_='set-card block')
-            for i in product_elements:
-                with open('data.txt', 'w') as file:
-                    a = soup.find_all('a', class_='di_b c_b')
-                    #file.write("a")
-            #return product_elements
-
-async def main():
-    a = await get_item("https://dental-first.ru/catalog/stomatologicheskie-materialy/plombirovochnye-materialy-shpritsy/shpritsy-estelite-/estelite-posterior/")
-    print(a)
+            text = await response.text()
+            soup = BeautifulSoup(text, 'html.parser')
+            name_blocks = soup.find_all('a', class_='di_b c_b')
+            for i in name_blocks:
+                title = str(i.contents[0])
+                with open('data.txt', 'a') as file:
+                    file.write(title + "\n")
 
 async def handler(request):
-    await get_item("https://dental-first.ru/catalog/stomatologicheskie-materialy/plombirovochnye-materialy-shpritsy/shpritsy-estelite-/estelite-posterior/")
-    data = []
-    return web.json_response(data)
+    url = request.query.get('url')
+    await get_item(url)
+    return web.json_response()
 
 app = web.Application()
 app.router.add_get('/', handler)
