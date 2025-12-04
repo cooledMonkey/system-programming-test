@@ -12,8 +12,8 @@ async def get_item(url):
             name_blocks = soup.find_all('a', class_='di_b c_b')
             for i in name_blocks:
                 title = str(i.contents[0])
-                with open('data.txt', 'a') as file:
-                    file.write(title + "\n")
+                async with aiofiles.open("data_async.txt", 'a') as file:
+                    await file.write(title + "\n")
 
 async def handler(request):
     url = request.query.get('url')
