@@ -10,15 +10,19 @@ async def get_item(url):
             text = await response.text()
             soup = BeautifulSoup(text, 'html.parser')
             name_blocks = soup.find_all('a', class_='di_b c_b')
+            total_price = 0.0
             for i in name_blocks:
                 title = str(i.contents[0])
                 async with aiofiles.open("data_async.txt", 'a') as file:
                     await file.write(title + "\n")
+            for i in soup.find_all('span', class_='set-card__price'):
+                total_price += float((i.get_text(strip=True)).replace("₽", "").split()[0])
+    return total_price
 
 async def handler(request):
     url = request.query.get('url')
-    await get_item(url)
-    return web.json_response()
+    total_prices = await get_item(url)
+    return web.json_response(total_prices)
 
 app = web.Application()
 app.router.add_get('/', handler)
