@@ -14,7 +14,6 @@ async def get_str_count(file_name):
 
 
 async def analyze_file_async(file_name):
-    print(file_name)
     return await get_str_count(file_name)
 
 

@@ -1,8 +1,8 @@
-
 import aiohttp
 from aiohttp import web
 from bs4 import BeautifulSoup
 import aiofiles
+
 
 async def get_item(url):
     async with aiohttp.ClientSession() as session:
@@ -19,6 +19,7 @@ async def get_item(url):
                 total_price += float((i.get_text(strip=True)).replace("₽", "").split()[0])
     return total_price
 
+
 async def handler(request):
     url = request.query.get('url')
     total_prices = await get_item(url)
@@ -29,6 +30,7 @@ app.router.add_get('/', handler)
 
 def server():
     web.run_app(app, host='127.0.0.1', port=8080)
+
 
 if __name__ == '__main__':
     server()
