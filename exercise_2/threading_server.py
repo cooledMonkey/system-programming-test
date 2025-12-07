@@ -6,13 +6,16 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+
 def get_str_count(file_name):
     with open(file_name, 'rb') as f:
         count = sum(1 for _ in f)
     return count
 
+
 def analyze_file_threading(file_name):
     return get_str_count(file_name)
+
 
 def worker(file_queue, result_queue):
     while True:
@@ -22,6 +25,7 @@ def worker(file_queue, result_queue):
             break
         result_queue.put(analyze_file_threading(file_path))
         file_queue.task_done()
+
 
 @app.route('/')
 def handler():
@@ -49,6 +53,7 @@ def handler():
     for i in range(len(thread_list)):
         response += result_queue.get()
     return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8081, threaded=True)
