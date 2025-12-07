@@ -6,6 +6,7 @@ import requests
 
 
 def main(server_type='async'):
+    # массив ссылок по которым будут парситься товары
     links = ["https://dental-first.ru/catalog/stomatologicheskie-materialy/plombirovochnye-materialy-shpritsy/shpritsy-estelite-/estelite-posterior/",
              "https://dental-first.ru/catalog/stomatologicheskie-materialy/plombirovochnye-materialy-shpritsy/shpritsy-estelite-/estelite-sigma-quick/",
              "https://dental-first.ru/catalog/stomatologicheskie-materialy/ekrany-i-ochki-zashchitnye/ochki-zashchitnye-clean-safe/",
@@ -34,15 +35,15 @@ def main(server_type='async'):
 
 
 if __name__ == '__main__':
-    server_type = "async"
+    server_type_choice = "threading"  # переменная для определения типа сервера(async или threading)
     ram_info = psutil.virtual_memory()
     process_async = psutil.Process().memory_info().rss/1024/1024
     begin = time.time()
-    main(server_type=server_type)
+    main(server_type=server_type_choice)
     async_end = time.time() - begin
     mem_1 = (psutil.Process().memory_info().rss / 1024 / 1024) - process_async
     print(f"Употреблённая память до: {mem_1} Mбайт")
     print(f"Время: {async_end} секунд")
-    print(f"{server_type} завершил работу\n\n")
+    print(f"{server_type_choice} завершил работу\n\n")
 
 

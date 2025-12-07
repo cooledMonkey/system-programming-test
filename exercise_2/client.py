@@ -6,8 +6,11 @@ import requests
 
 
 def main(server_type='sync'):
-    dir_names = [ "C:/Users",
-        "C:/Users/user/PycharmProjects/system-programming-test/exercise_1"]
+    # массив путей к папкам в которых будут анализироваться файлы
+    # необходимо поменять их на существующие на том компьютере на котором будет происходить
+    # запуск программы чтобы избежать ошибок
+    dir_names = ["C:/Users",
+                 "C:/Users/user/PycharmProjects/system-programming-test/exercise_1"]
     threads = []
     n = 0
 
@@ -23,8 +26,8 @@ def main(server_type='sync'):
         n += 1
         return n
 
-    for i in dir_names:
-        t = Thread(target=req, args=(i,))
+    for i in range(400):
+        t = Thread(target=req, args=(dir_names[1],))
         threads.append(t)
 
     for t in threads:
@@ -35,13 +38,12 @@ def main(server_type='sync'):
 
 
 if __name__ == '__main__':
-    server_type = "async"
-    process_async = psutil.Process().memory_info().rss / 1024 / 1024
+    server_type_variable = "threading"  # переменная для определения типа сервера(async или threading)
+    process = psutil.Process().memory_info().rss / 1024 / 1024
     begin = time.time()
-    main(server_type=server_type)
-    async_end = time.time() - begin
-    mem_1 = (psutil.Process().memory_info().rss / 1024 / 1024) - process_async
-    print(f"Употреблённая память до: {mem_1} Mбайт")
-    print(f"Время: {async_end} секунд")
-    print(f"{server_type} завершил работу\n\n")
-
+    main(server_type=server_type_variable)
+    end = time.time() - begin
+    mem = (psutil.Process().memory_info().rss / 1024 / 1024) - process
+    print(f"Употреблённая память до: {mem} Mбайт")
+    print(f"Время: {end} секунд")
+    print(f"{server_type_variable} завершил работу\n\n")
