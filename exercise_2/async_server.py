@@ -6,10 +6,13 @@ import os
 
 
 async def get_str_count(file_name):
-    async with aiofiles.open(file_name, 'rb') as f:
+    async with aiofiles.open(file_name, 'rb', buffering=1024) as f:
         count = 0
-        async for _ in f:
-            count += 1
+        while True:
+            chunk = await f.read(8192)
+            if not chunk:
+                break
+            count += chunk.count(b'\n')
     return count
 
 
