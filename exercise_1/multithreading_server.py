@@ -1,21 +1,31 @@
+import threading
+
 from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+total_total_price = 0.0
+price_mutex = threading.Lock()
+
 
 def get_item(url):
     response = requests.get(url)
     text = response.text
     soup = BeautifulSoup(text, 'html.parser')
     name_blocks = soup.find_all('a', class_='di_b c_b')
+    total_text = ""
     for i in name_blocks:
-        title = str(i.contents[0])
-        with open('data_threading.txt', 'a') as file:
-            file.write(title + "\n")
-            total_price = 0.0
+        total_text += str(i.contents[0]) + "\n"
+    with open('data_threading.txt', 'a') as file:
+        file.write(total_text)
+    total_price = 0.0
     for i in soup.find_all('span', class_='set-card__price'):
         total_price += float((i.get_text(strip=True)).replace("₽", "").split()[0])
+    price_mutex.acquire()
+    global total_total_price
+    total_total_price += total_price
+    price_mutex.release()
     return total_price
 
 @app.route('/')
